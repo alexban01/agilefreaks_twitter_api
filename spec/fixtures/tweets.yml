@@ -1,0 +1,9 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+twelve_ft:
+  uuid: 9fd116b5-728f-48d8-8fd0-6918203dc6bc
+  content: "Best thing I found in a while: https://12ft.io/"
+
+ogp:
+  uuid: 4839789c-6b31-4689-b7e1-ed4ae106c4c6
+  content: "Today I learned https://ogp.me/"
