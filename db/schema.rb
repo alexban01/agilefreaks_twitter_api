@@ -10,7 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_30_142231) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_30_154803) do
+  create_table "images", force: :cascade do |t|
+    t.integer "byte_size"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+  end
+
   create_table "tweets", primary_key: "uuid", id: :string, force: :cascade do |t|
     t.string "content"
     t.datetime "created_at", null: false
