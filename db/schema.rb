@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_07_30_154803) do
+ActiveRecord::Schema[8.1].define(version: 2026_07_30_165740) do
   create_table "images", force: :cascade do |t|
     t.integer "byte_size"
     t.datetime "created_at", null: false
@@ -18,9 +18,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_07_30_154803) do
     t.string "url"
   end
 
+  create_table "resource_descriptions", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.string "description"
+    t.integer "image_id", null: false
+    t.string "title"
+    t.string "tweet_id", null: false
+    t.datetime "updated_at", null: false
+    t.string "url"
+    t.index ["image_id"], name: "index_resource_descriptions_on_image_id"
+    t.index ["tweet_id"], name: "index_resource_descriptions_on_tweet_id"
+  end
+
   create_table "tweets", primary_key: "uuid", id: :string, force: :cascade do |t|
     t.string "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  add_foreign_key "resource_descriptions", "images"
+  add_foreign_key "resource_descriptions", "tweets", primary_key: "uuid", on_delete: :cascade
 end
