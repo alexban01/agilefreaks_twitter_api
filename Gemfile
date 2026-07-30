@@ -48,3 +48,6 @@ group :development, :test do
 end
 
 gem "graphql", "~> 2.6"
+
+gem "rspec-rails", "~> 8.0", groups: [ :development, :test ], require: false
+gem "webmock", "~> 3.26", groups: [ :development, :test ], require: false
