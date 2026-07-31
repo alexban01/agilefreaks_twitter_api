@@ -28,5 +28,6 @@ module Types
       "Hello World!"
     end
 
+    field :tweets, resolver: Resolvers::Tweets
   end
 end
