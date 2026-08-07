@@ -31,30 +31,13 @@ RSpec.describe GraphqlController, type: :request do
       expect(response).to have_http_status(:ok)
 
       parsed_body = JSON.parse(response.body)
-      expect(parsed_body)
-        .to eq({
-                 "data" => {
-                   "tweets" => [
-                     {
-                       "uuid" => tweet.uuid,
-                       "message" => tweet.content,
-                       "resources" => []
-                     },
-                     {
-                       "uuid" => "4839789c-6b31-4689-b7e1-ed4ae106c4c6",
-                       "message" => "Today I learned https://ogp.me/",
-                       "resources" => [
-                         {
-                           "title" => "Open Graph protocol",
-                           "description" => "The Open Graph protocol enables any web page to become a rich object in a social graph.",
-                           "url" => "https://ogp.me/",
-                           "image" => { "url" => "https://ogp.me/logo.png" }
-                         }
-                       ]
-                     }
-                   ]
-                 }
-               })
+      expect(parsed_body.dig('data', 'tweets').size).to eq(Tweet.count)
+      expect(parsed_body.dig('data', 'tweets'))
+        .to include({
+                      "uuid" => tweet.uuid,
+                      "message" => tweet.content,
+                      "resources" => []
+                    })
     end
 
     it 'returns the resource descriptions of a tweet' do

@@ -7,3 +7,13 @@ twelve_ft:
 ogp:
   uuid: 4839789c-6b31-4689-b7e1-ed4ae106c4c6
   content: "Today I learned https://ogp.me/"
+
+plain:
+  uuid: 2c0d3f4e-9a1b-4c2d-8e3f-5a6b7c8d9e0f
+  content: "No links here"
+
+# fixtures are shared by the whole suite, so scrapping specs need a tweet that
+# resource_descriptions.yml doesn't already point at
+unscrapped:
+  uuid: 7b1f8a20-3d5c-4e6f-9a8b-1c2d3e4f5a6b
+  content: "Today I learned https://ogp.me/"
