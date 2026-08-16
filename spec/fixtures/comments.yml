@@ -1,0 +1,8 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+# tweets.yml sets uuid explicitly, so a label reference (`tweet: plain`) would
+# resolve to a different, hashed id
+unscrapped:
+  uuid: 3f9c1d20-5b7e-4a12-9c3d-6e8f0a1b2c34
+  tweet_id: 2c0d3f4e-9a1b-4c2d-8e3f-5a6b7c8d9e0f
+  content: "Today I learned https://ogp.me/"

@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe OpenGraphScrapperJob do
-  fixtures :tweets
+  fixtures :tweets, :comments
 
   describe 'perform' do
-    subject { OpenGraphScrapperJob.new.perform(tweet_id: tweet.id) }
+    subject { OpenGraphScrapperJob.new.perform(owner) }
 
     context 'tweet content contains an URL' do
-      let(:tweet) { tweets(:unscrapped) }
+      let(:owner) { tweets(:unscrapped) }
 
       context 'URL defines an OpenGraph resource' do
         before do
@@ -20,7 +20,7 @@ RSpec.describe OpenGraphScrapperJob do
         it 'creates a ResourceDescription' do
           expect { subject }.to change { ResourceDescription.count }.by(1)
 
-          resource_description = tweet.resource_descriptions.first
+          resource_description = owner.resource_descriptions.first
           expect(resource_description.title).to eq 'Open Graph protocol'
           expect(resource_description.description).to eq 'The Open Graph protocol enables any web page to become a rich object in a social graph.'
           expect(resource_description.url).to eq 'https://ogp.me/'
@@ -50,8 +50,29 @@ RSpec.describe OpenGraphScrapperJob do
       end
     end
 
+    context 'comment content contains an URL' do
+      let(:owner) { comments(:unscrapped) }
+
+      before do
+        stub_request(:get, 'https://ogp.me/')
+          .to_return(body: File.read('./spec/fixtures/ogp.me/success.html'), status: 200)
+        stub_request(:head, 'https://ogp.me/logo.png')
+          .to_return(headers: { 'Content-Length' => '1234' }, status: 200)
+      end
+
+      # the same job scraps comments, there is no second implementation
+      it 'creates a ResourceDescription owned by the comment' do
+        expect { subject }.to change { ResourceDescription.count }.by(1)
+
+        resource_description = owner.resource_descriptions.first
+        expect(resource_description.title).to eq 'Open Graph protocol'
+        expect(resource_description.url).to eq 'https://ogp.me/'
+        expect(resource_description.image.byte_size).to eq(1234)
+      end
+    end
+
     context 'tweet content contains no URL' do
-      let(:tweet) { tweets(:plain) }
+      let(:owner) { tweets(:plain) }
 
       it 'creates no ResourceDescription' do
         expect { subject }.not_to change { ResourceDescription.count }
