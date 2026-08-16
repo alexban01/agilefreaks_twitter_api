@@ -50,5 +50,26 @@ RSpec.describe GraphqlController, type: :request do
       expect(last_comment.content).to eq("This is exactly the ladder I needed: https://12ft.io/")
       expect(last_comment.tweet).to eq(tweet)
     end
+
+    context 'the tweet does not exist' do
+      let(:variables) do
+        {
+          "input": {
+            "tweetUuid": "00000000-0000-0000-0000-000000000000",
+            "content": "This is exactly the ladder I needed: https://12ft.io/"
+          }
+        }
+      end
+
+      it 'returns an error and creates no comment' do
+        expect {
+          subject
+        }.not_to change { Comment.count }
+
+        parsed_body = JSON.parse(response.body)
+        expect(parsed_body['errors']).to be_present
+        expect(parsed_body.dig('data', 'commentCreate')).to be_nil
+      end
+    end
   end
 end
