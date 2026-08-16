@@ -1,0 +1,31 @@
+1. Don't write any code yet. Read the codebase and tell me what you understand from it.
+What came back: explained architecture and the flow. A few things flagged but mentioned they're not that important so no need to fix.
+
+2 use the feature-development skill. These are the requirements for the feature: <pasted the Create Comment Mutation part from the requirements> Just explore the codebase first and stop. We will make a plan after that.
+I asked this so claude can have a general idea of what the feature will be so it can make the plan better.
+Questions:
+A. "Saves it against the comment for later querying" — does this feature include exposing comments through the GraphQL read side now, or just persisting them so a later story can query them? -> I chose "Persist only" because the read side is a separate feature with its own plan.
+B. How should I model a resource_description's owner, now that it can be a Tweet or a Comment? -> I said not sure explain to me what each option does. After I got the explanations I chose Polymorphic owner.
+
+3. Now plan it.
+-> After reading the plan I accepted it with manual edit aproval, because it reused the OpenGraph
+
+4. use the code review skill to review the last changes. Make sure that all requirements were implemented -> the agent found 4 issues. I told it to make a plan for fixing them. I got asked:
+A. Rolling back the polymorphic migration can't restore comment-owned resource descriptions — they have no tweet to point at. What should `down` do? -> I chose "roll back to a looser schema"
+The plan came in and to me it looked like it's going to solve the issues found by the code reviewer so I accepted it.
+
+5. write the assertions yourself -> The plan was implemented but it was missing the specs
+
+6. I got asked: Seven checkpoint commits are on the branch. How should I shape them before review? (Nothing is pushed — there's no remote — so rewriting is safe.) -> I choose to keep all seven commits
+
+7. Now lets work on the next part: List Tweets Query. I want minimal code implementation. I will post the
+  requirements. Do not implement anything yet. Tell me what you understood from them and then we'll make a plan
+  later. <I pasted the List Tweets Query requirement>. -> The agent said: whats being asked, whI at's already in place, what actually has to change and a couple other notes.
+
+8. Ok, now make the plan. Again: I want minimal code that satisfies the requirement.
+
+9. ok, implement it. Again I want minimal code that satisfies the requirement only. -> After reading the plan I accepted it.
+
+10. use the code review skill to review the last changes
+
+11. 1. make the graphql fields nullable 2. specifiy comment ordering from oldest to newest -> after the feature was implemented and reviewd there were a couple findings.

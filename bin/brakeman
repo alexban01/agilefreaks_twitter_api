@@ -2,6 +2,6 @@
 require "rubygems"
 require "bundler/setup"
 
-ARGV.unshift("--ensure-latest")
-
+# no --ensure-latest: a new upstream release is not a reason to fail the build.
+# Dependabot keeps the gem current; this binstub only reports real findings.
 load Gem.bin_path("brakeman", "brakeman")

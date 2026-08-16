@@ -1,4 +1,4 @@
 class ResourceDescription < ApplicationRecord
-  belongs_to :tweet, primary_key: :uuid
+  belongs_to :owner, polymorphic: true
   belongs_to :image
 end
