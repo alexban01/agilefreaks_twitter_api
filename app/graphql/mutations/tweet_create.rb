@@ -12,7 +12,7 @@ module Mutations
         content: content
       )
 
-      OpenGraphScrapperJob.perform_later(tweet_id: tweet.id)
+      OpenGraphScrapperJob.perform_later(tweet)
 
       {
         tweet: tweet
