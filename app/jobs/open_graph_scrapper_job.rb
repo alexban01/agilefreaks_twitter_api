@@ -49,9 +49,9 @@ class OpenGraphScrapperJob < ApplicationJob
     response["content-length"]&.to_i || Net::HTTP.get(uri).bytesize
   end
 
-  def create_resource_description(tweet, og_data)
+  def create_resource_description(owner, og_data)
     ResourceDescription.create!(
-      owner: tweet,
+      owner: owner,
       url: og_data[:url],
       title: og_data[:title],
       description: og_data[:description],
