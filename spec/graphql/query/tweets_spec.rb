@@ -78,6 +78,32 @@ RSpec.describe GraphqlController, type: :request do
                     })
     end
 
+    it 'returns comments oldest first' do
+      tweet = tweets(:twelve_ft)
+      # inserted newest first, so insertion order alone would fail this
+      newest = Comment.create!(uuid: SecureRandom.uuid, tweet: tweet, content: "second",
+                               created_at: 1.hour.ago)
+      oldest = Comment.create!(uuid: SecureRandom.uuid, tweet: tweet, content: "first",
+                               created_at: 2.hours.ago)
+
+      post '/graphql', params: { query: query }
+
+      parsed_body = JSON.parse(response.body)
+      commented_tweet = parsed_body.dig('data', 'tweets').find { |t| t["uuid"] == tweet.uuid }
+
+      expect(commented_tweet["comments"].map { |c| c["uuid"] }).to eq([ oldest.uuid, newest.uuid ])
+    end
+
+    it 'returns a resource description with missing metadata rather than failing the query' do
+      resource_descriptions(:ogp).update_column(:title, nil)
+
+      post '/graphql', params: { query: query }
+
+      parsed_body = JSON.parse(response.body)
+      expect(parsed_body['errors']).to be_nil
+      expect(parsed_body.dig('data', 'tweets').size).to eq(Tweet.count)
+    end
+
     # counts SQL statements without a matcher gem; SCHEMA and TRANSACTION are noise
     def count_queries(&block)
       count = 0

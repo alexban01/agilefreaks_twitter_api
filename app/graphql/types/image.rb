@@ -2,7 +2,7 @@
 
 module Types
   class Image < Types::BaseObject
-    field :url, String, null: false
-    field :byte_size, Integer, null: false
+    field :url, String, null: true
+    field :byte_size, Integer, null: true
   end
 end

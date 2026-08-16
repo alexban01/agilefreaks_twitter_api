@@ -7,7 +7,7 @@ class Tweet < ApplicationRecord
   has_many :resource_descriptions, as: :owner, dependent: :destroy
   # destroyed through Rails, not the database cascade, so each comment takes its own
   # (foreign-key-less) resource descriptions with it
-  has_many :comments, dependent: :destroy
+  has_many :comments, -> { order(:created_at) }, dependent: :destroy
 
   alias_method :resources, :resource_descriptions
 end
