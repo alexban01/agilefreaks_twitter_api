@@ -5,7 +5,7 @@ module Resolvers
     type [ Types::Tweet ], null: false
 
     def resolve
-      Tweet.all
+      Tweet.includes(resource_descriptions: :image, comments: { resource_descriptions: :image })
     end
   end
 end

@@ -78,6 +78,36 @@ RSpec.describe GraphqlController, type: :request do
                     })
     end
 
+    # counts SQL statements without a matcher gem; SCHEMA and TRANSACTION are noise
+    def count_queries(&block)
+      count = 0
+      counter = ->(*, payload) { count += 1 unless %w[SCHEMA TRANSACTION].include?(payload[:name]) }
+      ActiveSupport::Notifications.subscribed(counter, 'sql.active_record', &block)
+      count
+    end
+
+    def seed_tweets_with_comments(how_many)
+      how_many.times do
+        tweet = Tweet.create!(uuid: SecureRandom.uuid, content: "a tweet")
+
+        2.times do
+          comment = Comment.create!(uuid: SecureRandom.uuid, tweet: tweet, content: "a comment")
+          ResourceDescription.create!(owner: comment, url: "u", title: "t", description: "d",
+                                      image: Image.new(url: "i", byte_size: 1))
+        end
+      end
+    end
+
+    it 'fires the same number of queries however many tweets and comments there are' do
+      seed_tweets_with_comments(2)
+      queries_for_two = count_queries { post '/graphql', params: { query: query } }
+
+      seed_tweets_with_comments(2)
+      queries_for_four = count_queries { post '/graphql', params: { query: query } }
+
+      expect(queries_for_four).to eq(queries_for_two)
+    end
+
     it 'returns the comments of a tweet, resources and all' do
       tweet = tweets(:plain)
       comment = comments(:scrapped)
