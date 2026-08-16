@@ -3,7 +3,8 @@ class Tweet < ApplicationRecord
 
   alias_attribute :message, :content
 
-  has_many :resource_descriptions
+  # polymorphic owners can't carry a foreign key, so the cascade moves into the app
+  has_many :resource_descriptions, as: :owner, dependent: :destroy
 
   alias_method :resources, :resource_descriptions
 end

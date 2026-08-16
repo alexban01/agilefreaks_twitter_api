@@ -51,7 +51,7 @@ class OpenGraphScrapperJob < ApplicationJob
 
   def create_resource_description(tweet, og_data)
     ResourceDescription.create!(
-      tweet: tweet,
+      owner: tweet,
       url: og_data[:url],
       title: og_data[:title],
       description: og_data[:description],
