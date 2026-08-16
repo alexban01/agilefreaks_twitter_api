@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe GraphqlController, type: :request do
   describe 'tweets' do
-    fixtures :tweets, :resource_descriptions, :images
+    fixtures :tweets, :comments, :resource_descriptions, :images
 
     let(:query) do
       <<~GQL
@@ -16,6 +16,18 @@ RSpec.describe GraphqlController, type: :request do
                   url
                   image {
                       url
+                  }
+              }
+              comments {
+                  uuid
+                  message
+                  resources {
+                      title
+                      description
+                      url
+                      image {
+                          url
+                      }
                   }
               }
           }
@@ -36,7 +48,8 @@ RSpec.describe GraphqlController, type: :request do
         .to include({
                       "uuid" => tweet.uuid,
                       "message" => tweet.content,
-                      "resources" => []
+                      "resources" => [],
+                      "comments" => []
                     })
     end
 
@@ -53,6 +66,34 @@ RSpec.describe GraphqlController, type: :request do
         .to include({
                       "uuid" => tweet.uuid,
                       "message" => tweet.content,
+                      "resources" => [
+                        {
+                          "title" => resource_description.title,
+                          "description" => resource_description.description,
+                          "url" => resource_description.url,
+                          "image" => { "url" => resource_description.image.url }
+                        }
+                      ],
+                      "comments" => []
+                    })
+    end
+
+    it 'returns the comments of a tweet, resources and all' do
+      tweet = tweets(:plain)
+      comment = comments(:scrapped)
+      resource_description = resource_descriptions(:ogp_comment)
+
+      post '/graphql', params: { query: query }
+
+      expect(response).to have_http_status(:ok)
+
+      parsed_body = JSON.parse(response.body)
+      commented_tweet = parsed_body.dig('data', 'tweets').find { |t| t["uuid"] == tweet.uuid }
+
+      expect(commented_tweet["comments"])
+        .to include({
+                      "uuid" => comment.uuid,
+                      "message" => comment.content,
                       "resources" => [
                         {
                           "title" => resource_description.title,

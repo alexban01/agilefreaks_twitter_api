@@ -9,3 +9,12 @@ ogp:
   title: Open Graph protocol
   description: The Open Graph protocol enables any web page to become a rich object in a social graph.
   url: https://ogp.me/
+
+# the same table serves both owners
+ogp_comment:
+  owner_type: Comment
+  owner_id: 7d4e6f81-2c3a-4b95-8e17-0f2a3b4c5d6e
+  image: ogp_logo
+  title: Open Graph protocol
+  description: The Open Graph protocol enables any web page to become a rich object in a social graph.
+  url: https://ogp.me/

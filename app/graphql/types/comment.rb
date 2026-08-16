@@ -3,5 +3,7 @@
 module Types
   class Comment < Types::BaseObject
     field :uuid, ID, null: false
+    field :message, String, null: false
+    field :resources, [ Types::ResourceDescription ], null: false
   end
 end
