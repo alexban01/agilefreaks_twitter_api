@@ -5,29 +5,24 @@ class OpenGraphScrapperJob < ApplicationJob
 
   queue_as :default
 
-  def perform(tweet_id:)
-    tweet = find_tweet(tweet_id)
-
-    extract_urls(tweet).each do |url|
+  # owner is any record with a content string and resource_descriptions
+  def perform(owner)
+    extract_urls(owner).each do |url|
       og_data = extract_og_data(fetch_content(url))
       # a page without complete Open Graph metadata simply has no resource to describe
       next if og_data.values.any?(&:blank?)
 
-      create_resource_description(tweet, og_data)
+      create_resource_description(owner, og_data)
     rescue StandardError => e
-      # ponytail: one bad URL shouldn't drop the rest of the tweet's resources
+      # ponytail: one bad URL shouldn't drop the rest of the owner's resources
       logger.warn("#{self.class}: #{url} failed: #{e.message}")
     end
   end
 
   private
 
-  def find_tweet(id)
-    Tweet.find(id)
-  end
-
-  def extract_urls(tweet)
-    URI.extract(tweet.content, %w[http https])
+  def extract_urls(owner)
+    URI.extract(owner.content, %w[http https])
   end
 
   def fetch_content(url)
@@ -49,9 +44,9 @@ class OpenGraphScrapperJob < ApplicationJob
     response["content-length"]&.to_i || Net::HTTP.get(uri).bytesize
   end
 
-  def create_resource_description(tweet, og_data)
+  def create_resource_description(owner, og_data)
     ResourceDescription.create!(
-      tweet: tweet,
+      owner: owner,
       url: og_data[:url],
       title: og_data[:title],
       description: og_data[:description],
