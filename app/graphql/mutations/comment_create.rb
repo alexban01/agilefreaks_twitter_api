@@ -17,6 +17,8 @@ module Mutations
         content: content
       )
 
+      OpenGraphScrapperJob.perform_later(comment)
+
       {
         comment: comment
       }

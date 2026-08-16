@@ -51,6 +51,12 @@ RSpec.describe GraphqlController, type: :request do
       expect(last_comment.tweet).to eq(tweet)
     end
 
+    it 'starts an OpenGraphScrapperJob' do
+      expect(OpenGraphScrapperJob).to receive(:perform_later).with(anything)
+
+      subject
+    end
+
     context 'the tweet does not exist' do
       let(:variables) do
         {
